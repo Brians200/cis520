@@ -35,6 +35,7 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 /**
  * This is an example of using the accelerometer to integrate the device's
@@ -57,6 +58,8 @@ public class AccelerometerPlay extends Activity {
     private Display mDisplay;
     private WakeLock mWakeLock;
 
+    private boolean mShowGame;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,11 +78,41 @@ public class AccelerometerPlay extends Activity {
         // Create a bright wake lock
         mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, getClass()
                 .getName());
+        
+        //Our implementation
+        mShowGame = true;
+        //Our implementation
 
         // instantiate our simulation view and set it as the activity's content
         mSimulationView = new SimulationView(this);
         setContentView(mSimulationView);
     }
+    
+    //Our implementation
+    public void resumeTheGame(View view)
+    {
+    	setContentView(mSimulationView);
+    	onResume();
+    }
+    
+    public void pauseTheGame(View view)
+    {
+    	onPause();
+    	setContentView(R.layout.main);
+    }
+    
+    public void resetGame(View view)
+    {
+    	mSimulationView.stopSimulation();
+    	mSimulationView = new SimulationView(this);
+    	setContentView(mSimulationView);
+    }
+    
+    public void showHighScores(View view)
+    {
+    	
+    }
+    //Our implementation
 
     @Override
     protected void onResume() {
@@ -138,6 +171,7 @@ public class AccelerometerPlay extends Activity {
         private float mVerticalBound;
         private final ParticleSystem mParticleSystem = new ParticleSystem();
 
+        private Button mResetButton;
         /*
          * Each of our particle holds its previous and current position, its
          * acceleration. for added realism each particle has its own friction
@@ -344,6 +378,13 @@ public class AccelerometerPlay extends Activity {
 
         public SimulationView(Context context) {
             super(context);
+            ((View)this).setOnClickListener(new OnClickListener()
+            {
+            	public void onClick(View v)
+            	{
+            		pauseTheGame(v);
+            	}
+            });
             mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
             DisplayMetrics metrics = new DisplayMetrics();
@@ -413,7 +454,7 @@ public class AccelerometerPlay extends Activity {
         @Override
         protected void onDraw(Canvas canvas) {
 
-            /*
+        	 /*
              * draw the background
              */
 
@@ -454,6 +495,11 @@ public class AccelerometerPlay extends Activity {
         }
 
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+        
+        protected void onClickListener(View v)
+        {
+        	pauseTheGame(v);
         }
     }
 }
