@@ -5,15 +5,14 @@ import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 
-@SuppressWarnings("deprecation")
 public class AntiTheftService extends Service implements SensorEventListener{
 
 	boolean alarmRunning;
-	private SensorManager sensorMgr;
+	private SensorManager mSensorManager;
+	private Sensor mAccelerometer;
     private long lastUpdate = -1;
     private float x, y, z;
     private float last_x, last_y, last_z;
@@ -31,27 +30,26 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	public void onCreate() {
 		alarmRunning = false;
 		
-		sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
-		boolean accelSupported = sensorMgr.registerListener((SensorListener) this,
-			SensorManager.SENSOR_ACCELEROMETER,
-			SensorManager.SENSOR_DELAY_GAME);
-	 
-		if (!accelSupported) {
-		    // on accelerometer on this device
-		    sensorMgr.unregisterListener((SensorListener) this,
-	                SensorManager.SENSOR_ACCELEROMETER);
-		}
-
+		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+		
+		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		 
 	}
+
+	
 
 	@Override
 	public void onDestroy() {
 		alarmRunning = false;
+		mSensorManager.unregisterListener(this);
+
 	}
 	
 	@Override
 	public void onStart(Intent intent, int startid) {
 		alarmRunning = true;
+		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+	    
 	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
