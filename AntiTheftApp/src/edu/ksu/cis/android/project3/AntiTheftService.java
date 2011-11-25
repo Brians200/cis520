@@ -1,11 +1,16 @@
 package edu.ksu.cis.android.project3;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Service;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.IBinder;
 
 public class AntiTheftService extends Service implements SensorEventListener{
@@ -13,9 +18,12 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	boolean alarmRunning;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-    private long lastUpdate = -1;
+    //private long lastUpdate = -1;
  
-	
+	long timeBeforeAlarmGoesOff = 5;
+    boolean isTimerRunning;
+    Timer timer;
+    
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -25,7 +33,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	@Override
 	public void onCreate() {
 		alarmRunning = false;
-		
+		isTimerRunning=false;
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		
 		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -37,13 +45,20 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	@Override
 	public void onDestroy() {
 		alarmRunning = false;
+		if(isTimerRunning)
+		{
+			isTimerRunning=false;
+			timer.cancel();
+		}
 		mSensorManager.unregisterListener(this);
+		
 
 	}
 	
 	@Override
 	public void onStart(Intent intent, int startid) {
 		alarmRunning = true;
+		isTimerRunning=false;
 		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 	    
 	}
@@ -63,16 +78,21 @@ public class AntiTheftService extends Service implements SensorEventListener{
 			float z = values[2];
 
 			float accelationSquareRoot = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-			long actualTime = System.currentTimeMillis();
+			//long actualTime = System.currentTimeMillis();
 			if (accelationSquareRoot >= 2) //
 			{
-				if (actualTime - lastUpdate < 200) {
-					return;
-				}
-				lastUpdate = actualTime;
+				//if (actualTime - lastUpdate < 200) {
+				//	return;
+				//}
+				//lastUpdate = actualTime;
 				//Device was moved
-				int X = 3;
-				
+
+				if(!isTimerRunning)
+				{
+					isTimerRunning=true;
+					timer = new Timer();
+					timer.schedule(new SetOffAlarm(),timeBeforeAlarmGoesOff);
+				}
 			}
 
 		}
@@ -80,5 +100,24 @@ public class AntiTheftService extends Service implements SensorEventListener{
 
 	}
 	
+	class SetOffAlarm extends TimerTask {
+		public void run() {
 	
+			//NEED TO PLAY ALARM
+			
+			MediaPlayer mp = MediaPlayer.create(getBaseContext(),
+                    R.raw.alarm);
+            mp.start();
+            mp.setOnCompletionListener(new OnCompletionListener() {
+
+                public void onCompletion(MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+			
+			
+			//timer.cancel(); //Not necessary because we call System.exit
+			System.exit(0); //Stops the AWT thread (and everything else)
+		}
+	}
 }
