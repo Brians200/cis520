@@ -17,12 +17,13 @@ package edu.ksu.cis.android.project3;
 
 
 
+import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -117,7 +118,7 @@ public class AccelerometerPlay extends Activity {
     
     public void showHighScores(View view)
     {
-    	setContentView(R.layout.highScores);
+    	setContentView(R.layout.high_scores);
     }
     //Our implementation
 
