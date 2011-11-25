@@ -2,6 +2,7 @@ package edu.ksu.cis.android.project3;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -16,38 +17,15 @@ public class AntiTheftMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-    }
+        }
     
 	public void startAlarmService(View view) {
-		if(!isMyServiceRunning())
-		{
-			startService(new Intent(this, AntiTheftService.class));
-		}
+		
+		startService(new Intent(this, AntiTheftService.class));
 	}
 
 	public void stopAlarmService(View view) {
-		if(isMyServiceRunning())
-		{
-			stopService(new Intent(this, AntiTheftService.class));
-		}
-		final MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
-        mp.start();
-        mp.setOnCompletionListener(new OnCompletionListener() {
-
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
-        });
+		
+		stopService(new Intent(this, AntiTheftService.class));
 	}
-	
-	private boolean isMyServiceRunning() {
-	    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-	        if ("edu.ksu.cis.android.project3.AntiTheftService".equals(service.service.getClassName())) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-
 }

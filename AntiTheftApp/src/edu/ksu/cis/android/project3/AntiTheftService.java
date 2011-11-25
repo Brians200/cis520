@@ -24,6 +24,8 @@ public class AntiTheftService extends Service implements SensorEventListener{
     boolean isTimerRunning;
     Timer timer;
     
+    MediaPlayer mp;
+    
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -49,6 +51,10 @@ public class AntiTheftService extends Service implements SensorEventListener{
 		{
 			isTimerRunning=false;
 			timer.cancel();
+			if(mp.isPlaying())
+			{
+				mp.stop();
+			}
 		}
 		mSensorManager.unregisterListener(this);
 		
@@ -103,8 +109,11 @@ public class AntiTheftService extends Service implements SensorEventListener{
 		public void run() {
 	
 			//NEED TO PLAY ALARM
-			
-			final MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
+			if(mp.isPlaying())
+			{
+				mp.stop();
+			}
+			mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
             mp.start();
             mp.setOnCompletionListener(new OnCompletionListener() {
 
