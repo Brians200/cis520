@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.view.View;
 
@@ -28,6 +30,14 @@ public class AntiTheftMain extends Activity {
 		{
 			stopService(new Intent(this, AntiTheftService.class));
 		}
+		final MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
+        mp.start();
+        mp.setOnCompletionListener(new OnCompletionListener() {
+
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+            }
+        });
 	}
 	
 	private boolean isMyServiceRunning() {
