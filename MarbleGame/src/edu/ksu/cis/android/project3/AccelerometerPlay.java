@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -98,6 +99,11 @@ public class AccelerometerPlay extends Activity {
     public void pauseTheGame(View view)
     {
     	onPause();
+    	showMainMenu(view);
+    }
+    
+    public void showMainMenu(View view)
+    {
     	setContentView(R.layout.main);
     }
     
@@ -106,11 +112,12 @@ public class AccelerometerPlay extends Activity {
     	mSimulationView.stopSimulation();
     	mSimulationView = new SimulationView(this);
     	setContentView(mSimulationView);
+    	onResume();
     }
     
     public void showHighScores(View view)
     {
-    	
+    	setContentView(R.layout.highScores);
     }
     //Our implementation
 
@@ -457,8 +464,11 @@ public class AccelerometerPlay extends Activity {
         	 /*
              * draw the background
              */
-
-            canvas.drawBitmap(mWood, 0, 0, null);
+        	
+            //canvas.drawBitmap(mWood, 0, 0, null);
+            Paint paint = new Paint();
+            paint.setColor(0xffffffff);
+            canvas.drawRect(mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound, paint);
 
             /*
              * compute the new position of our object, based on accelerometer

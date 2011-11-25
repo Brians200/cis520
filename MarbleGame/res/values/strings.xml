@@ -16,4 +16,14 @@
 
 <resources>
     <string name="app_name">AccelerometerPlay</string>
+    <string name="HighScoreNum2">2.</string>
+    <string name="HighScoreNum1">1.</string>
+    <string name="HighScoreNum3">3.</string>
+    <string name="HighScoreNum4">4.</string>
+    <string name="HighScoreNum5">5.</string>
+    <string name="HighScoreNum6">6.</string>
+    <string name="HighScoreNum7">7.</string>
+    <string name="HighScoreNum8">8.</string>
+    <string name="HighScoreNum9">9.</string>
+    <string name="HighScoreNum10">10.</string>
 </resources>
