@@ -14,11 +14,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
     private long lastUpdate = -1;
-    private float x, y, z;
-    private float last_x, last_y, last_z;
-    private static final int SHAKE_THRESHOLD = 800;
  
-
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -59,27 +55,28 @@ public class AntiTheftService extends Service implements SensorEventListener{
 
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (event.sensor.equals(SensorManager.SENSOR_ACCELEROMETER)) {
-		    long curTime = System.currentTimeMillis();
-		    // only allow one update every 100ms.
-		    if ((curTime - lastUpdate) > 100) {
-			long diffTime = (curTime - lastUpdate);
-			lastUpdate = curTime;
-			x = event.values[SensorManager.DATA_X];
-			y = event.values[SensorManager.DATA_Y];
-			z = event.values[SensorManager.DATA_Z];
-	 
-			float speed = Math.abs(x+y+z - last_x - last_y - last_z)
-	                              / diffTime * 10000;
-			if (speed > SHAKE_THRESHOLD) {
-			    int x= 3;
-			    x=x+3;
+		if (event.sensor.getType()==Sensor.TYPE_ACCELEROMETER) {
+			float[] values = event.values;
+			// Movement
+			float x = values[0];
+			float y = values[1];
+			float z = values[2];
+
+			float accelationSquareRoot = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+			long actualTime = System.currentTimeMillis();
+			if (accelationSquareRoot >= 2) //
+			{
+				if (actualTime - lastUpdate < 200) {
+					return;
+				}
+				lastUpdate = actualTime;
+				//Device was moved
+				int X = 3;
+				
 			}
-			last_x = x;
-			last_y = y;
-			last_z = z;
-		    }
+
 		}
+
 
 	}
 	
