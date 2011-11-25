@@ -18,9 +18,9 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	boolean alarmRunning;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
-    //private long lastUpdate = -1;
+    private long lastUpdate = -1;
  
-	long timeBeforeAlarmGoesOff = 5;
+	long timeBeforeAlarmGoesOff = 5000;
     boolean isTimerRunning;
     Timer timer;
     
@@ -59,8 +59,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	public void onStart(Intent intent, int startid) {
 		alarmRunning = true;
 		isTimerRunning=false;
-		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-	    
+		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);	    
 	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -78,13 +77,13 @@ public class AntiTheftService extends Service implements SensorEventListener{
 			float z = values[2];
 
 			float accelationSquareRoot = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
-			//long actualTime = System.currentTimeMillis();
+			long actualTime = System.currentTimeMillis();
 			if (accelationSquareRoot >= 2) //
 			{
-				//if (actualTime - lastUpdate < 200) {
-				//	return;
-				//}
-				//lastUpdate = actualTime;
+				if (actualTime - lastUpdate < 200) {
+					return;
+				}
+				lastUpdate = actualTime;
 				//Device was moved
 
 				if(!isTimerRunning)
@@ -105,8 +104,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	
 			//NEED TO PLAY ALARM
 			
-			MediaPlayer mp = MediaPlayer.create(getBaseContext(),
-                    R.raw.alarm);
+			final MediaPlayer mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
             mp.start();
             mp.setOnCompletionListener(new OnCompletionListener() {
 
@@ -115,9 +113,10 @@ public class AntiTheftService extends Service implements SensorEventListener{
                 }
             });
 			
-			
-			//timer.cancel(); //Not necessary because we call System.exit
-			System.exit(0); //Stops the AWT thread (and everything else)
+            alarmRunning = false;
+   			isTimerRunning=false;
+			timer.cancel(); //Not necessary because we call System.exit
+			//System.exit(0); //Stops the AWT thread (and everything else)
 		}
 	}
 }
