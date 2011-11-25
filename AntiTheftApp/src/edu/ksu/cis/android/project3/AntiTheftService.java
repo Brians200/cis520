@@ -109,7 +109,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 		public void run() {
 	
 			//NEED TO PLAY ALARM
-			if(mp.isPlaying())
+			if(mp!=null&&mp.isPlaying())
 			{
 				mp.stop();
 			}
