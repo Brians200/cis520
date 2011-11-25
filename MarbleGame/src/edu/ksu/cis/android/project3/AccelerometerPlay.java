@@ -17,7 +17,6 @@ package edu.ksu.cis.android.project3;
 
 
 
-import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
