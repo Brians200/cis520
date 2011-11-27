@@ -86,7 +86,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 
 			float accelationSquareRoot = (x * x + y * y + z * z) / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
 			long actualTime = System.currentTimeMillis();
-			if (accelationSquareRoot >= 1) //
+			if (accelationSquareRoot >= 1.9) //
 			{
 				if (actualTime - lastUpdate < 200) {
 					return;
