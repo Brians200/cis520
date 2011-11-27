@@ -37,6 +37,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * This is an example of using the accelerometer to integrate the device's
@@ -118,6 +119,37 @@ public class AccelerometerPlay extends Activity {
     public void showHighScores(View view)
     {
     	setContentView(R.layout.high_scores);
+    	
+    	//textView2 - textView11 are the TextViews with the high scores on the high scores page
+    	TextView tv = (TextView) findViewById(R.id.textView2);
+    	tv.setText("1. This is the top score.");
+    	
+    	tv = (TextView) findViewById(R.id.textView3);
+    	tv.setText("2. Second best score.");
+    	
+    	tv = (TextView) findViewById(R.id.textView4);
+    	tv.setText("3. Third best");
+    	
+    	tv = (TextView) findViewById(R.id.textView5);
+    	tv.setText("4. Fourth best");
+    	
+    	tv = (TextView) findViewById(R.id.textView6);
+    	tv.setText("5. Fifth best");
+    	
+    	tv = (TextView) findViewById(R.id.textView7);
+    	tv.setText("6. Sixth best");
+    	
+    	tv = (TextView) findViewById(R.id.textView8);
+    	tv.setText("7. Seventh best");
+    	
+    	tv = (TextView) findViewById(R.id.textView9);
+    	tv.setText("8. Eighth best");
+    	
+    	tv = (TextView) findViewById(R.id.textView10);
+    	tv.setText("9. Ninth best");
+    	
+    	tv = (TextView) findViewById(R.id.textView11);
+    	tv.setText("10. Tenth best");
     }
     //Our implementation
 
