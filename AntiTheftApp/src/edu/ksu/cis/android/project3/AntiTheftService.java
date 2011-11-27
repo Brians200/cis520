@@ -23,7 +23,7 @@ public class AntiTheftService extends Service
 	private float mAccelCurrent; // current acceleration including gravity
 	private float mAccelLast; // last acceleration including gravity
 
-	private long DELIBERATE_MOVEMENT_TIME = 3000;
+	private long alarmDelay = 3000;
 	Timer timer;
 	MediaPlayer mp;
 	
@@ -96,7 +96,7 @@ public class AntiTheftService extends Service
 		currentMovementTime = 0;
 		previousMovementTime = System.currentTimeMillis();
 		Bundle extras = intent.getExtras();
-		DELIBERATE_MOVEMENT_TIME = extras.getInt("Time");
+		alarmDelay = extras.getInt("Time");
 
 	}
 	
@@ -105,7 +105,7 @@ public class AntiTheftService extends Service
 	{
 		timer.cancel();
 		timer = new Timer();
-		timer.schedule(new PlayAlarmSound(), 5000);
+		timer.schedule(new PlayAlarmSound(),alarmDelay);
 	}
 	
 	
@@ -123,10 +123,9 @@ public class AntiTheftService extends Service
 			if(mAccel>.5)
 			{
 				currentMovementTime+=timeDifference;
-				if(currentMovementTime>=DELIBERATE_MOVEMENT_TIME)
+				if(currentMovementTime>=1000)
 				{
 					StartAlarmTimer();
-					timer.cancel();
 				}
 			}
 			else
