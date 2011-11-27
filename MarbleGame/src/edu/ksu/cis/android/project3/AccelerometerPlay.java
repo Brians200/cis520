@@ -17,13 +17,17 @@ package edu.ksu.cis.android.project3;
 
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -209,8 +213,14 @@ public class AccelerometerPlay extends Activity {
         private float mHorizontalBound;
         private float mVerticalBound;
         private final ParticleSystem mParticleSystem = new ParticleSystem();
+        
+        //Our Implementation
+        private float mScreenWidth;
+        private float mScreenHeight;
+        
+        private ArrayList<float[]> walls;
+        //Our Implementation
 
-        private Button mResetButton;
         /*
          * Each of our particle holds its previous and current position, its
          * acceleration. for added realism each particle has its own friction
@@ -297,7 +307,7 @@ public class AccelerometerPlay extends Activity {
          * A particle system is just a collection of particles
          */
         class ParticleSystem {
-            static final int NUM_PARTICLES = 15;
+            static final int NUM_PARTICLES = 1;
             private Particle mBalls[] = new Particle[NUM_PARTICLES];
 
             ParticleSystem() {
@@ -443,6 +453,20 @@ public class AccelerometerPlay extends Activity {
             opts.inDither = true;
             opts.inPreferredConfig = Bitmap.Config.RGB_565;
             mWood = BitmapFactory.decodeResource(getResources(), R.drawable.wood, opts);
+            
+            walls = generateWalls();
+        }
+        
+        private ArrayList<float[]> generateWalls()
+        {
+        	ArrayList<float[]> retVal = new ArrayList<float[]>();
+        	float[] wall = new float[4];
+        	wall[0] = mXOrigin-100;
+        	wall[1] = mYOrigin-100;
+        	wall[2] = mXOrigin+100;
+        	wall[3] = mYOrigin+100;
+        	retVal.add(wall);
+        	return retVal;
         }
 
         @Override
@@ -453,6 +477,8 @@ public class AccelerometerPlay extends Activity {
             mYOrigin = (h - mBitmap.getHeight()) * 0.5f;
             mHorizontalBound = ((w / mMetersToPixelsX - sBallDiameter) * 0.5f);
             mVerticalBound = ((h / mMetersToPixelsY - sBallDiameter) * 0.5f);
+            mScreenWidth = w;
+            mScreenHeight = h;
         }
 
         public void onSensorChanged(SensorEvent event) {
@@ -499,8 +525,10 @@ public class AccelerometerPlay extends Activity {
         	
             //canvas.drawBitmap(mWood, 0, 0, null);
             Paint paint = new Paint();
-            paint.setColor(0xffffffff);
-            canvas.drawRect(mXOrigin, mYOrigin, mHorizontalBound, mVerticalBound, paint);
+            paint.setColor(Color.WHITE);
+            canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
+            paint.setColor(Color.BLACK);
+            canvas.drawLine(mXOrigin - 100, mYOrigin - 100, mXOrigin + 100, mYOrigin + 100, paint);
 
             /*
              * compute the new position of our object, based on accelerometer
