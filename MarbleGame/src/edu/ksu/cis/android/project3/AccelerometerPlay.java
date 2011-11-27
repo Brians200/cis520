@@ -304,12 +304,12 @@ public class AccelerometerPlay extends Activity {
                 float[] wall;
                 float[] wall1 = new float[4];
                 int min;
-                final float x1 = (mPosX/0.5f + sBallDiameter) * mMetersToPixelsX;
-                final float y1 = (mPosY/0.5f + sBallDiameter) * mMetersToPixelsY;
+                final float x1 = ((mPosX/0.5f + sBallDiameter) * mMetersToPixelsX) + mXOrigin;
+                final float y1 = ((mPosY/0.5f + sBallDiameter) * mMetersToPixelsY) + mYOrigin;
                 for(int for_i = 0; for_i < walls.size(); for_i++)
                 {
                 	wall = walls.get(for_i);
-                	if(x1 > wall[0] && x1 < wall[2] && y1 > wall[1] && y1 > wall[3])
+                	if((x1 > wall[0] && x1 < wall[2]) && (y1 > wall[1] && y1 < wall[3]))
                 	{
                 		wall1[0] = Math.abs(x1-wall[0]);
                 		wall1[1] = Math.abs(y1-wall[1]);
@@ -318,11 +318,11 @@ public class AccelerometerPlay extends Activity {
                 		min = findMin(wall1[0],wall1[1],wall1[2],wall1[3]);
                 		if(min == 0 || min == 2)
                 		{
-                			mPosX = (wall[min]/mMetersToPixelsX - sBallDiameter) * 0.5f;
+                			mPosX = ((wall[min]-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
                 		}
                 		else
                 		{
-                			mPosY = (wall[min]/mMetersToPixelsY - sBallDiameter) * 0.5f;
+                			mPosY = ((wall[min]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
                 		}
                 	}
                 }
@@ -541,10 +541,10 @@ public class AccelerometerPlay extends Activity {
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = 100;
-        	wall[1] = 100;
-        	wall[2] = 200;
-        	wall[3] = 200;
+        	wall[0] = 300;
+        	wall[1] = 300;
+        	wall[2] = 400;
+        	wall[3] = 400;
         	retVal.add(wall);
         	return retVal;
         }
