@@ -51,10 +51,10 @@ public class AntiTheftService extends Service implements SensorEventListener{
 		{
 			isTimerRunning=false;
 			timer.cancel();
-			if(mp.isPlaying())
-			{
-				mp.stop();
-			}
+		}
+		if(mp!=null&&mp.isPlaying())
+		{
+			mp.stop();
 		}
 		mSensorManager.unregisterListener(this);
 		
@@ -114,6 +114,7 @@ public class AntiTheftService extends Service implements SensorEventListener{
 				mp.stop();
 			}
 			mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
+			mp.setLooping(true);
             mp.start();
             mp.setOnCompletionListener(new OnCompletionListener() {
 
