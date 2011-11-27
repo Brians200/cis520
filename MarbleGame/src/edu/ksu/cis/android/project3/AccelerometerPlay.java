@@ -300,7 +300,87 @@ public class AccelerometerPlay extends Activity {
                 } else if (y < -ymax) {
                     mPosY = -ymax;
                 }
+                
+                float[] wall;
+                float[] wall1 = new float[4];
+                int min;
+                final float x1 = (mPosX/0.5f + sBallDiameter) * mMetersToPixelsX;
+                final float y1 = (mPosY/0.5f + sBallDiameter) * mMetersToPixelsY;
+                for(int for_i = 0; for_i < walls.size(); for_i++)
+                {
+                	wall = walls.get(for_i);
+                	if(x1 > wall[0] && x1 < wall[2] && y1 > wall[1] && y1 > wall[3])
+                	{
+                		wall1[0] = Math.abs(x1-wall[0]);
+                		wall1[1] = Math.abs(y1-wall[1]);
+                		wall1[2] = Math.abs(x1-wall[2]);
+                		wall1[3] = Math.abs(y1-wall[3]);
+                		min = findMin(wall1[0],wall1[1],wall1[2],wall1[3]);
+                		if(min == 0 || min == 2)
+                		{
+                			mPosX = (wall[min]/mMetersToPixelsX - sBallDiameter) * 0.5f;
+                		}
+                		else
+                		{
+                			mPosY = (wall[min]/mMetersToPixelsY - sBallDiameter) * 0.5f;
+                		}
+                	}
+                }
             }
+        }
+        
+        private int findMin(float one, float two, float three, float four)
+        {
+        	if(one < two)
+        	{
+        		if(one < three)
+        		{
+        			if(one < four)
+        			{
+        				return 0;
+        			}
+        			else
+        			{
+        				return 3;
+        			}
+        		}
+        		else
+        		{
+        			if(three < four)
+        			{
+        				return 2;
+        			}
+        			else
+        			{
+        				return 3;
+        			}
+        		}
+        	}
+        	else
+        	{
+        		if(two < three)
+        		{
+        			if(two < four)
+        			{
+        				return 1;
+        			}
+        			else
+        			{
+        				return 3;
+        			}
+        		}
+        		else
+        		{
+        			if(three < four)
+        			{
+        				return 2;
+        			}
+        			else
+        			{
+        				return 3;
+        			}
+        		}
+        	}
         }
 
         /*
@@ -461,10 +541,10 @@ public class AccelerometerPlay extends Activity {
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = mXOrigin-100;
-        	wall[1] = mYOrigin-100;
-        	wall[2] = mXOrigin+100;
-        	wall[3] = mYOrigin+100;
+        	wall[0] = 100;
+        	wall[1] = 100;
+        	wall[2] = 200;
+        	wall[3] = 200;
         	retVal.add(wall);
         	return retVal;
         }
@@ -528,7 +608,8 @@ public class AccelerometerPlay extends Activity {
             paint.setColor(Color.WHITE);
             canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
             paint.setColor(Color.BLACK);
-            canvas.drawLine(mXOrigin - 100, mYOrigin - 100, mXOrigin + 100, mYOrigin + 100, paint);
+            float[] wall1 = walls.get(0);
+            canvas.drawRect(wall1[0], wall1[1], wall1[2], wall1[3], paint);
 
             /*
              * compute the new position of our object, based on accelerometer
