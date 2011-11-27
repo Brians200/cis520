@@ -104,6 +104,7 @@ public class AntiTheftService extends Service
 	public void StartAlarmTimer()
 	{
 		timer.cancel();
+		timer = new Timer();
 		timer.schedule(new PlayAlarmSound(), 5000);
 	}
 	
