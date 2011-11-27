@@ -33,7 +33,7 @@ public class AntiTheftMain extends Activity {
 		Context context = getApplicationContext();
 		CharSequence contentTitle = "Anti Theft Service";
 		CharSequence contentText = "Status: Running";
-		Intent notificationIntent = new Intent(this, AntiTheftService.class);
+		Intent notificationIntent = new Intent(this, AntiTheftMain.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 		notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
