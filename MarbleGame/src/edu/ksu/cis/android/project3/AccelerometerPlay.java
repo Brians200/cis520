@@ -309,20 +309,24 @@ public class AccelerometerPlay extends Activity {
                 for(int for_i = 0; for_i < walls.size(); for_i++)
                 {
                 	wall = walls.get(for_i);
-                	if((x1 > wall[0] && x1 < wall[2]) && (y1 > wall[1] && y1 < wall[3]))
+                	wall1[0] = ((wall[0]-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
+                	wall1[1] = ((wall[1]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
+                	wall1[2] = ((wall[2]-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
+                	wall1[3] = ((wall[3]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
+                	if((x > wall1[0] && x < wall1[2]) && (y > wall1[1] && y < wall1[3]))
                 	{
-                		wall1[0] = Math.abs(x1-wall[0]);
-                		wall1[1] = Math.abs(y1-wall[1]);
-                		wall1[2] = Math.abs(x1-wall[2]);
-                		wall1[3] = Math.abs(y1-wall[3]);
+                		wall1[0] = Math.abs(x1-wall1[0]);
+                		wall1[1] = Math.abs(y1-wall1[1]);
+                		wall1[2] = Math.abs(x1-wall1[2]);
+                		wall1[3] = Math.abs(y1-wall1[3]);
                 		min = findMin(wall1[0],wall1[1],wall1[2],wall1[3]);
                 		if(min == 0 || min == 2)
                 		{
-                			mPosX = ((wall[min]-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
+                			mPosX = wall1[min];
                 		}
                 		else
                 		{
-                			mPosY = ((wall[min]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
+                			mPosY = wall1[min];
                 		}
                 	}
                 }
