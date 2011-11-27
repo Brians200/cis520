@@ -15,7 +15,6 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 public class AntiTheftService extends Service
 {
@@ -107,12 +106,6 @@ public class AntiTheftService extends Service
 		timer.cancel();
 		timer = new Timer();
 		timer.schedule(new PlayAlarmSound(), 5000);
-		
-		//opens activity to give them a chance to shut it off
-		Intent callIntent = new Intent(Intent.ACTION_CALL); 
-		callIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); 
-		
-		callIntent.setClass(this, AntiTheftMain.class);
 		
 	}
 	
