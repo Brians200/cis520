@@ -104,9 +104,7 @@ public class AntiTheftService extends Service
 	public void StartAlarmTimer()
 	{
 		timer.cancel();
-		timer = new Timer();
 		timer.schedule(new PlayAlarmSound(), 5000);
-		
 	}
 	
 	
@@ -121,7 +119,7 @@ public class AntiTheftService extends Service
 	class TriggerAlarmQuestionMark extends TimerTask {
 		public void run() {
 			long timeDifference = System.currentTimeMillis()-previousMovementTime;
-			if(mAccel>-.5)
+			if(mAccel>.5)
 			{
 				currentMovementTime+=timeDifference;
 				if(currentMovementTime>=DELIBERATE_MOVEMENT_TIME)

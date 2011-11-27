@@ -25,8 +25,8 @@ public class AntiTheftMain extends Activity {
         mNotificationManager = (NotificationManager) getSystemService(ns);
     }
     
-	public void startAlarmService(View view) 
-	{
+	public void startAlarmService(View view) {
+		
 		int delay=1000;
 		RadioButton rb1=(RadioButton)findViewById(R.id.radio0);
 		RadioButton rb2=(RadioButton)findViewById(R.id.radio1);
