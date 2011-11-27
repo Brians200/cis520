@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.RadioButton;
 
 public class AntiTheftMain extends Activity {
 	
@@ -24,7 +25,24 @@ public class AntiTheftMain extends Activity {
         mNotificationManager = (NotificationManager) getSystemService(ns);
     }
     
-	public void startAlarmService(View view) {
+	public void startAlarmService(View view) 
+	{
+		int delay=1000;
+		RadioButton rb1=(RadioButton)findViewById(R.id.radio0);
+		RadioButton rb2=(RadioButton)findViewById(R.id.radio1);
+		RadioButton rb3=(RadioButton)findViewById(R.id.radio2);
+		if(rb1.isChecked())
+		{
+			delay = 1000;
+		}
+		else if(rb2.isChecked())
+		{
+			delay = 5000;
+		}
+		else if(rb3.isChecked())
+		{
+			delay = 10000;
+		}
 		
 		//CREATE NOTIFICATION		
 		int icon = R.drawable.ic_launcher;
@@ -48,7 +66,9 @@ public class AntiTheftMain extends Activity {
 		mNotificationManager.notify(NOTIFICATION_ID, notification);
 		
 		//START SERVICE
-		startService(new Intent(this, AntiTheftService.class));
+		Intent intent = new Intent(this, AntiTheftService.class);
+		intent.putExtra("Time", delay);
+		startService(intent);
 	}
 
 	public void stopAlarmService(View view) {

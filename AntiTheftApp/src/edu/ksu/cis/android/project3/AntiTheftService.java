@@ -13,7 +13,9 @@ import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Toast;
 
 public class AntiTheftService extends Service
 {
@@ -22,7 +24,7 @@ public class AntiTheftService extends Service
 	private float mAccelCurrent; // current acceleration including gravity
 	private float mAccelLast; // last acceleration including gravity
 
-	private long DELIBERATE_MOVEMENT_TIME = 1000;
+	private long DELIBERATE_MOVEMENT_TIME = 3000;
 	Timer timer;
 	MediaPlayer mp;
 	
@@ -91,39 +93,20 @@ public class AntiTheftService extends Service
 	    
 	    timer = new Timer();
 		//checks every 100 ms for movement
-		timer.scheduleAtFixedRate(new TriggerAlarmQuestionMark(), 0,100);
+		timer.scheduleAtFixedRate(new TriggerAlarmQuestionMark(), 0,10);
 		currentMovementTime = 0;
 		previousMovementTime = System.currentTimeMillis();
+		Bundle extras = intent.getExtras();
+		DELIBERATE_MOVEMENT_TIME = extras.getInt("Time");
+
 	}
 	
 	
-	public void SetOffAlarm()
+	public void StartAlarmTimer()
 	{
-		AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-
-		//NOT REALLY SURE WHAT THE FLAG WILL BE using 0 for now?
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
-
-		//stop sound if already playing
-		if(mp!=null&&mp.isPlaying())
-		{
-			mp.stop();
-		}
-		mp = MediaPlayer.create(getBaseContext(), R.raw.baby);
-	
-		//Loop until the alarm is silenced
-		mp.setLooping(true);
-	
-        mp.start();
-        mp.setOnCompletionListener(new OnCompletionListener() {
-
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
-        });
-		
-		timer.cancel(); //Not necessary because we call System.exit
-		//System.exit(0); //Stops the AWT thread (and everything else)
+		Toast.makeText(getApplicationContext(), "Alarm Triggered", Toast.LENGTH_SHORT).show();
+		timer.cancel();
+		timer.schedule(new PlayAlarmSound(), 5000);
 	}
 	
 	
@@ -143,7 +126,7 @@ public class AntiTheftService extends Service
 				currentMovementTime+=timeDifference;
 				if(currentMovementTime>=DELIBERATE_MOVEMENT_TIME)
 				{
-					SetOffAlarm();
+					StartAlarmTimer();
 					timer.cancel();
 				}
 			}
@@ -151,6 +134,36 @@ public class AntiTheftService extends Service
 			{
 				currentMovementTime = 0;
 			}
+		}
+	}
+	
+	class PlayAlarmSound extends TimerTask {
+		public void run() {
+			AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+			//NOT REALLY SURE WHAT THE FLAG WILL BE using 0 for now?
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+
+			//stop sound if already playing
+			if(mp!=null&&mp.isPlaying())
+			{
+				mp.stop();
+			}
+			mp = MediaPlayer.create(getBaseContext(), R.raw.baby);
+		
+			//Loop until the alarm is silenced
+			mp.setLooping(true);
+		
+	        mp.start();
+	        mp.setOnCompletionListener(new OnCompletionListener() {
+
+	            public void onCompletion(MediaPlayer mp) {
+	                mp.release();
+	            }
+	        });
+			
+			timer.cancel(); //Not necessary because we call System.exit
+			//System.exit(0); //Stops the AWT thread (and everything else)
 		}
 	}
 }
