@@ -64,6 +64,11 @@ public class AntiTheftMain extends Activity {
 	
 
 		mNotificationManager.notify(NOTIFICATION_ID, notification);
+		
+		//START SERVICE
+		Intent intent = new Intent(this, AntiTheftService.class);
+		intent.putExtra("Time", delay);
+		startService(intent);
 	}
 
 	public void stopAlarmService(View view) {
