@@ -4,11 +4,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.IBinder;
@@ -108,13 +110,21 @@ public class AntiTheftService extends Service implements SensorEventListener{
 	class SetOffAlarm extends TimerTask {
 		public void run() {
 	
-			//NEED TO PLAY ALARM
+			AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
+			//NOT REALLY SURE WHAT THE FLAG WILL BE using 0 for now?
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+
+			//stop sound if already playing
 			if(mp!=null&&mp.isPlaying())
 			{
 				mp.stop();
 			}
-			mp = MediaPlayer.create(getBaseContext(), R.raw.alarm);
+			mp = MediaPlayer.create(getBaseContext(), R.raw.baby);
+		
+			//Loop until the alarm is silenced
 			mp.setLooping(true);
+		
             mp.start();
             mp.setOnCompletionListener(new OnCompletionListener() {
 
