@@ -17,7 +17,6 @@ import android.os.IBinder;
 
 public class AntiTheftService extends Service
 {
-	boolean alarmRunning;
 	private SensorManager mSensorManager;
 	private float mAccel; // acceleration apart from gravity
 	private float mAccelCurrent; // current acceleration including gravity
@@ -64,7 +63,6 @@ public class AntiTheftService extends Service
 
 	@Override
 	public void onCreate() {
-		alarmRunning = false;
 
 	}
 
@@ -72,7 +70,6 @@ public class AntiTheftService extends Service
 
 	@Override
 	public void onDestroy() {
-		alarmRunning = false;
 		timer.cancel();
 		if(mp!=null&&mp.isPlaying())
 		{
@@ -84,7 +81,6 @@ public class AntiTheftService extends Service
 	
 	@Override
 	public void onStart(Intent intent, int startid) {
-		alarmRunning = true;
 		
 		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 	    mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
@@ -126,7 +122,6 @@ public class AntiTheftService extends Service
             }
         });
 		
-        alarmRunning = false;
 		timer.cancel(); //Not necessary because we call System.exit
 		//System.exit(0); //Stops the AWT thread (and everything else)
 	}
