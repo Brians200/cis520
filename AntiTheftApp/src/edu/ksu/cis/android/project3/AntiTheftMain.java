@@ -11,19 +11,22 @@ import android.view.View;
 
 public class AntiTheftMain extends Activity {
 	
+	NotificationManager mNotificationManager;
+	final int NOTIFICATION_ID = 1;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        }
+        
+        String ns = Context.NOTIFICATION_SERVICE;
+        mNotificationManager = (NotificationManager) getSystemService(ns);
+    }
     
 	public void startAlarmService(View view) {
 		
-		//CREATE NOTIFICATION
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-		
+		//CREATE NOTIFICATION		
 		int icon = R.drawable.ic_launcher;
 		CharSequence tickerText = "Anti Theft Service Started";
 		Long when = System.currentTimeMillis();
@@ -40,14 +43,17 @@ public class AntiTheftMain extends Activity {
 		
 		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notification.flags |= Notification.FLAG_NO_CLEAR;
-		final int HELLO_ID = 1;
+	
 
-		mNotificationManager.notify(HELLO_ID, notification);
+		mNotificationManager.notify(NOTIFICATION_ID, notification);
+		
+		//START SERVICE
 		startService(new Intent(this, AntiTheftService.class));
 	}
 
 	public void stopAlarmService(View view) {
 		
+		mNotificationManager.cancel(NOTIFICATION_ID);
 		stopService(new Intent(this, AntiTheftService.class));
 	}
 }
