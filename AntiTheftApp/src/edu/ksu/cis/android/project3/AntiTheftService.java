@@ -6,10 +6,16 @@ import java.util.TimerTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.Camera.PictureCallback;
+import android.hardware.Camera.ShutterCallback;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -135,10 +141,12 @@ public class AntiTheftService extends Service
 		}
 	}
 	
+	
+	
 	class PlayAlarmSound extends TimerTask {
 		public void run() {
+			
 			AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-
 			//NOT REALLY SURE WHAT THE FLAG WILL BE using 0 for now?
 			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
@@ -162,6 +170,96 @@ public class AntiTheftService extends Service
 			
 			timer.cancel(); //Not necessary because we call System.exit
 			//System.exit(0); //Stops the AWT thread (and everything else)
+			
+			
+			//TAKE A PICTURE WITH FIRST CAMERA
+			ShutterCallback shutterCallback1 = new ShutterCallback() {
+				public void onShutter() {
+					// TODO Do something when the shutter closes.
+				}
+			};
+
+			PictureCallback rawCallback1 = new PictureCallback() {
+				public void onPictureTaken(byte[] _data, Camera _camera) {
+					// TODO Do something with the image RAW data.
+				}
+			};
+
+			PictureCallback jpegCallback1 = new PictureCallback() {
+				public void onPictureTaken(byte[] _data, Camera _camera) {
+					// TODO Do something with the image JPEG data.
+				}
+			};
+			
+		
+			Camera camera1;
+			camera1 = Camera.open(0);
+			
+			camera1.takePicture(shutterCallback1, rawCallback1, jpegCallback1);
+			
+			camera1.release();
+			
+			//TAKE A PICTURE WITH SECOND CAMERA
+			ShutterCallback shutterCallback2 = new ShutterCallback() {
+				public void onShutter() {
+					// TODO Do something when the shutter closes.
+				}
+			};
+
+			PictureCallback rawCallback2 = new PictureCallback() {
+				public void onPictureTaken(byte[] _data, Camera _camera) {
+					// TODO Do something with the image RAW data.
+				}
+			};
+
+			PictureCallback jpegCallback2 = new PictureCallback() {
+				public void onPictureTaken(byte[] _data, Camera _camera) {
+					// TODO Do something with the image JPEG data.
+				}
+			};
+			
+		
+			Camera camera2;
+			camera2 = Camera.open(1);
+			
+			camera2.takePicture(shutterCallback2, rawCallback2, jpegCallback2);
+			
+			camera2.release();
+			
+			
+			//GET GPS LOCATION
+			LocationManager mlocManager =(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+			LocationListener mlocListener = new LocationListener() {
+				
+				public void onStatusChanged(String provider, int status, Bundle extras) {
+					// TODO Auto-generated method stub
+					
+
+				}
+				
+				public void onProviderEnabled(String provider) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void onProviderDisabled(String provider) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				public void onLocationChanged(Location location) {
+					// TODO Auto-generated method stub
+					location.getLatitude();
+
+					location.getLongitude();
+
+					String Text = "My current location is: " + "Latitude = " + location.getLatitude() + "Longitude = " + location.getLongitude();
+				}
+			};
+
+			mlocManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+			
+			
 		}
 	}
 }
