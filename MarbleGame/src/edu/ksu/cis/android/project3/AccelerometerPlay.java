@@ -86,7 +86,6 @@ public class AccelerometerPlay extends Activity {
                 .getName());
         
         //Our implementation
-        mShowGame = true;
         //Our implementation
 
         // instantiate our simulation view and set it as the activity's content
@@ -304,8 +303,6 @@ public class AccelerometerPlay extends Activity {
                 float[] wall;
                 float[] wall1 = new float[4];
                 int min;
-                final float x1 = ((mPosX/0.5f + sBallDiameter) * mMetersToPixelsX) + mXOrigin;
-                final float y1 = ((mPosY/0.5f + sBallDiameter) * mMetersToPixelsY) + mYOrigin;
                 for(int for_i = 0; for_i < walls.size(); for_i++)
                 {
                 	wall = walls.get(for_i);
@@ -315,11 +312,7 @@ public class AccelerometerPlay extends Activity {
                 	wall1[3] = ((wall[3]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
                 	if((x > wall1[0] && x < wall1[2]) && (y > wall1[1] && y < wall1[3]))
                 	{
-                		wall1[0] = Math.abs(x1-wall1[0]);
-                		wall1[1] = Math.abs(y1-wall1[1]);
-                		wall1[2] = Math.abs(x1-wall1[2]);
-                		wall1[3] = Math.abs(y1-wall1[3]);
-                		min = findMin(wall1[0],wall1[1],wall1[2],wall1[3]);
+                		min = findMin(Math.abs(x-wall1[0]), Math.abs(y-wall1[1]), Math.abs(x-wall1[2]), Math.abs(y-wall1[3]));
                 		if(min == 0 || min == 2)
                 		{
                 			mPosX = wall1[min];
@@ -545,10 +538,10 @@ public class AccelerometerPlay extends Activity {
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = 300;
-        	wall[1] = 300;
-        	wall[2] = 400;
-        	wall[3] = 400;
+        	wall[0] = ((300-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
+        	wall[1] = ((300-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
+        	wall[2] = ((400-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
+        	wall[3] = ((400-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
         	retVal.add(wall);
         	return retVal;
         }
@@ -613,6 +606,10 @@ public class AccelerometerPlay extends Activity {
             canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
             paint.setColor(Color.BLACK);
             float[] wall1 = walls.get(0);
+            wall1[0] = ((wall1[0]/0.5f + sBallDiameter) * mMetersToPixelsX) + mXOrigin;
+            wall1[1] = ((wall1[1]/0.5f + sBallDiameter) * mMetersToPixelsY) + mYOrigin;
+            wall1[2] = ((wall1[2]/0.5f + sBallDiameter) * mMetersToPixelsX) + mXOrigin;
+            wall1[3] = ((wall1[3]/0.5f + sBallDiameter) * mMetersToPixelsY) + mYOrigin;
             canvas.drawRect(wall1[0], wall1[1], wall1[2], wall1[3], paint);
 
             /*
