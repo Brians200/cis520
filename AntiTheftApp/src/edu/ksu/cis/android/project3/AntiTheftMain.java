@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
@@ -68,6 +69,8 @@ public class AntiTheftMain extends Activity {
 		//START SERVICE
 		Intent intent = new Intent(this, AntiTheftService.class);
 		intent.putExtra("Time", delay);
+		Camera camera1;
+		camera1 = Camera.open(0);
 		startService(intent);
 	}
 
