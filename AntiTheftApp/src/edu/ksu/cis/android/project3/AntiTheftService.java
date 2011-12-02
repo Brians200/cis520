@@ -160,7 +160,8 @@ public class AntiTheftService extends Service
 			//Loop until the alarm is silenced
 			mp.setLooping(true);
 		
-	        mp.start();
+			//TODO: uncomment this
+	        //mp.start();
 	        mp.setOnCompletionListener(new OnCompletionListener() {
 
 	            public void onCompletion(MediaPlayer mp) {
@@ -188,6 +189,8 @@ public class AntiTheftService extends Service
 			PictureCallback jpegCallback1 = new PictureCallback() {
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
+					int n = 3;
+					n++;
 				}
 			};
 			
