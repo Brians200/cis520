@@ -538,10 +538,10 @@ public class AccelerometerPlay extends Activity {
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = ((300-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
-        	wall[1] = ((300-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
-        	wall[2] = ((400-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
-        	wall[3] = ((400-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
+        	wall[0] = 300;
+        	wall[1] = 300;
+        	wall[2] = 400;
+        	wall[3] = 400;
         	retVal.add(wall);
         	return retVal;
         }
@@ -606,10 +606,6 @@ public class AccelerometerPlay extends Activity {
             canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
             paint.setColor(Color.BLACK);
             float[] wall1 = walls.get(0);
-            wall1[0] = ((wall1[0]/0.5f + sBallDiameter) * mMetersToPixelsX) + mXOrigin;
-            wall1[1] = ((wall1[1]/0.5f + sBallDiameter) * mMetersToPixelsY) + mYOrigin;
-            wall1[2] = ((wall1[2]/0.5f + sBallDiameter) * mMetersToPixelsX) + mXOrigin;
-            wall1[3] = ((wall1[3]/0.5f + sBallDiameter) * mMetersToPixelsY) + mYOrigin;
             canvas.drawRect(wall1[0], wall1[1], wall1[2], wall1[3], paint);
 
             /*
