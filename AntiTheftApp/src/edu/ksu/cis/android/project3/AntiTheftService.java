@@ -161,7 +161,7 @@ public class AntiTheftService extends Service
 			mp.setLooping(true);
 		
 			//TODO: uncomment this
-	        //mp.start();
+	        mp.start();
 	        mp.setOnCompletionListener(new OnCompletionListener() {
 
 	            public void onCompletion(MediaPlayer mp) {
@@ -260,7 +260,7 @@ public class AntiTheftService extends Service
 				}
 			};
 
-			mlocManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+			//mlocManager.requestLocationUpdates( LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
 			
 			
 		}
