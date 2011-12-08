@@ -218,6 +218,7 @@ public class AccelerometerPlay extends Activity {
         private float mScreenHeight;
         
         private ArrayList<float[]> walls;
+        private ArrayList<float[]> walls2;
         //Our Implementation
 
         /*
@@ -306,10 +307,10 @@ public class AccelerometerPlay extends Activity {
                 for(int for_i = 0; for_i < walls.size(); for_i++)
                 {
                 	wall = walls.get(for_i);
-                	wall1[0] = ((wall[0]-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
-                	wall1[1] = ((wall[1]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
-                	wall1[2] = ((wall[2]-mXOrigin)/mMetersToPixelsX - sBallDiameter) * 0.5f;
-                	wall1[3] = ((wall[3]-mYOrigin)/mMetersToPixelsY - sBallDiameter) * 0.5f;
+                	wall1[0] = (((wall[0] - mXOrigin)/mMetersToPixelsX) - sBallDiameter);
+                	wall1[1] = (((wall[1] - mYOrigin)/mMetersToPixelsY));
+                	wall1[2] = (((wall[2] - mXOrigin)/mMetersToPixelsX));
+                	wall1[3] = (((wall[3] - mYOrigin)/mMetersToPixelsY));
                 	if((x > wall1[0] && x < wall1[2]) && (y > wall1[1] && y < wall1[3]))
                 	{
                 		min = findMin(Math.abs(x-wall1[0]), Math.abs(y-wall1[1]), Math.abs(x-wall1[2]), Math.abs(y-wall1[3]));
@@ -413,6 +414,10 @@ public class AccelerometerPlay extends Activity {
                         }
                     }
                     mLastDeltaT = dT;
+                }
+                else
+                {
+                    //is this maybe where we would set the starting position of the ball?
                 }
                 mLastT = t;
             }
@@ -531,17 +536,107 @@ public class AccelerometerPlay extends Activity {
             opts.inPreferredConfig = Bitmap.Config.RGB_565;
             mWood = BitmapFactory.decodeResource(getResources(), R.drawable.wood, opts);
             
-            walls = generateWalls();
+            //here we can decide what maze to use, we'll randomly select one and call the corresponding method
+            walls = generateWalls2();
+        }
+        
+        private ArrayList<float[]> generateWalls2()
+        {
+        	ArrayList<float[]> retVal = new ArrayList<float[]>();
+        	float[] wall = new float[4];
+        	wall[0] = 0;
+        	wall[1] = 0;
+        	wall[2] = 620;
+        	wall[3] = 752;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 620;
+        	wall[1] = 0;
+        	wall[2] = 1280;
+        	wall[3] = 100;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 1000;
+        	wall[1] = 100;
+        	wall[2] = 1280;
+        	wall[3] = 752;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 620;
+        	wall[1] = 450;
+        	wall[2] = 1000;
+        	wall[3] = 752;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 620;
+        	wall[1] = 396;
+        	wall[2] = 950;
+        	wall[3] = 420;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 660;
+        	wall[1] = 140;
+        	wall[2] = 950;
+        	wall[3] = 396;
+        	retVal.add(wall);
+        	return retVal;
         }
         
         private ArrayList<float[]> generateWalls()
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = 300;
+        	wall[0] = 500;
         	wall[1] = 300;
-        	wall[2] = 400;
-        	wall[3] = 400;
+        	wall[2] = 600;
+        	wall[3] = 450;
+        	retVal.add(wall);
+
+        	wall = new float[4];
+        	wall[0] = 600;
+        	wall[1] = 300;
+        	wall[2] = 1280;
+        	wall[3] = 350;
+        	retVal.add(wall);
+
+        	wall = new float[4];
+        	wall[0] = 600;
+        	wall[1] = 400;
+        	wall[2] = 1250;
+        	wall[3] = 450;
+        	retVal.add(wall);
+
+        	wall = new float[4];
+        	wall[0] = 100;
+        	wall[1] = 100;
+        	wall[2] = 1250;
+        	wall[3] = 150;
+        	retVal.add(wall);
+
+        	wall = new float[4];
+        	wall[0] = 100;
+        	wall[1] = 150;
+        	wall[2] = 200;
+        	wall[3] = 550;
+        	retVal.add(wall);
+
+        	wall = new float[4];
+        	wall[0] = 200;
+        	wall[1] = 500;
+        	wall[2] = 1280;
+        	wall[3] = 550;
+        	retVal.add(wall);
+
+        	wall = new float[4];
+        	wall[0] = 0;
+        	wall[1] = 600;
+        	wall[2] = 1250;
+        	wall[3] = 700;
         	retVal.add(wall);
         	return retVal;
         }
@@ -604,9 +699,14 @@ public class AccelerometerPlay extends Activity {
             Paint paint = new Paint();
             paint.setColor(Color.WHITE);
             canvas.drawRect(0, 0, mScreenWidth, mScreenHeight, paint);
-            paint.setColor(Color.BLACK);
-            float[] wall1 = walls.get(0);
-            canvas.drawRect(wall1[0], wall1[1], wall1[2], wall1[3], paint);
+            paint.setColor(Color.BLUE);
+            int counter;
+            float[] wall;
+            for(counter = 0; counter < walls.size(); counter++)
+            {
+            	wall = walls.get(counter);
+            	canvas.drawRect(wall[0],wall[1],wall[2],wall[3],paint);
+            }
 
             /*
              * compute the new position of our object, based on accelerometer
