@@ -310,7 +310,7 @@ public class AccelerometerPlay extends Activity {
                 	wall1[0] = (((wall[0] - mXOrigin)/mMetersToPixelsX) - sBallDiameter);
                 	wall1[1] = (((wall[1] - mYOrigin)/mMetersToPixelsY));
                 	wall1[2] = (((wall[2] - mXOrigin)/mMetersToPixelsX));
-                	wall1[3] = (((wall[3] - mYOrigin)/mMetersToPixelsY));
+                	wall1[3] = (((wall[3] - mYOrigin)/mMetersToPixelsY) - sBallDiameter);
                 	if((x > wall1[0] && x < wall1[2]) && (y > wall1[1] && y < wall1[3]))
                 	{
                 		min = findMin(Math.abs(x-wall1[0]), Math.abs(y-wall1[1]), Math.abs(x-wall1[2]), Math.abs(y-wall1[3]));
@@ -537,7 +537,47 @@ public class AccelerometerPlay extends Activity {
             mWood = BitmapFactory.decodeResource(getResources(), R.drawable.wood, opts);
             
             //here we can decide what maze to use, we'll randomly select one and call the corresponding method
-            walls = generateWalls2();
+            walls = generateWalls3();
+        }
+        
+        private ArrayList<float[]> generateWalls3()
+        {
+        	ArrayList<float[]> retVal = new ArrayList<float[]>();
+        	float[] wall = new float[4];
+        	wall[0] = 0;
+        	wall[1] = 0;
+        	wall[2] = 100;
+        	wall[3] = 752;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 100;
+        	wall[1] = 0;
+        	wall[2] = 1280;
+        	wall[3] = 100;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 100;
+        	wall[1] = 652;
+        	wall[2] = 1280;
+        	wall[3] = 752;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 1180;
+        	wall[1] = 0;
+        	wall[2] = 1280;
+        	wall[3] = 752;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 540;
+        	wall[1] = 296;
+        	wall[2] = 740;
+        	wall[3] = 496;
+        	retVal.add(wall);
+        	return retVal;
         }
         
         private ArrayList<float[]> generateWalls2()
