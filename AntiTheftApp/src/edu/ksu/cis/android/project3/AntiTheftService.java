@@ -232,7 +232,7 @@ public class AntiTheftService extends Service
 			
 			camera1.takePicture(shutterCallback1, rawCallback1, jpegCallback1);
 			
-			camera1.release();
+			//camera1.release();
 			
 			//TAKE A PICTURE WITH SECOND CAMERA
 			ShutterCallback shutterCallback2 = new ShutterCallback() {
@@ -280,7 +280,7 @@ public class AntiTheftService extends Service
 			
 			camera2.takePicture(shutterCallback2, rawCallback2, jpegCallback2);
 			
-			camera2.release();
+			//camera2.release();
 			
 			
 			//GET GPS LOCATION
