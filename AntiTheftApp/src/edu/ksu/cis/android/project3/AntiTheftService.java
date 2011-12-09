@@ -1,9 +1,13 @@
 package edu.ksu.cis.android.project3;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
@@ -19,8 +23,10 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore.Images.Media;
 
 public class AntiTheftService extends Service
 {
@@ -161,7 +167,7 @@ public class AntiTheftService extends Service
 			mp.setLooping(true);
 		
 			//TODO: uncomment this
-	        mp.start();
+	        //mp.start();
 	        mp.setOnCompletionListener(new OnCompletionListener() {
 
 	            public void onCompletion(MediaPlayer mp) {
@@ -177,6 +183,7 @@ public class AntiTheftService extends Service
 			ShutterCallback shutterCallback1 = new ShutterCallback() {
 				public void onShutter() {
 					// TODO Do something when the shutter closes.
+					
 				}
 			};
 
@@ -189,8 +196,33 @@ public class AntiTheftService extends Service
 			PictureCallback jpegCallback1 = new PictureCallback() {
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
-					int n = 3;
-					n++;
+					
+
+					Uri uriTarget = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, new ContentValues());
+					OutputStream imageFileOS;
+
+					try {
+
+						imageFileOS = getContentResolver().openOutputStream(uriTarget);
+						imageFileOS.write(_data);
+						imageFileOS.flush();
+						imageFileOS.close();
+					} 
+					catch (FileNotFoundException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+					catch (IOException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+
+					}
+
+					
+					
+					
 				}
 			};
 			
@@ -218,6 +250,27 @@ public class AntiTheftService extends Service
 			PictureCallback jpegCallback2 = new PictureCallback() {
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
+					Uri uriTarget = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, new ContentValues());
+					OutputStream imageFileOS;
+
+					try {
+
+						imageFileOS = getContentResolver().openOutputStream(uriTarget);
+						imageFileOS.write(_data);
+						imageFileOS.flush();
+						imageFileOS.close();
+					} 
+					catch (FileNotFoundException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+					catch (IOException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+
+					}
 				}
 			};
 			
