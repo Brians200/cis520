@@ -133,6 +133,11 @@ public class AntiTheftService extends Service
 	
 	class TriggerAlarmQuestionMark extends TimerTask {
 		public void run() {
+			
+			
+			
+			//TODO: remove this
+			
 			long timeDifference = System.currentTimeMillis()-previousMovementTime;
 			if(mAccel>.5)
 			{
@@ -154,9 +159,9 @@ public class AntiTheftService extends Service
 	class PlayAlarmSound extends TimerTask {
 		public void run() {
 			
-			//AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+			AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 			//NOT REALLY SURE WHAT THE FLAG WILL BE using 0 for now?
-			//audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
 			//stop sound if already playing
 			if(mp!=null&&mp.isPlaying())
@@ -180,22 +185,8 @@ public class AntiTheftService extends Service
 			timer.cancel(); //Not necessary because we call System.exit
 			//System.exit(0); //Stops the AWT thread (and everything else)
 			
-			
-			//TAKE A PICTURE WITH FIRST CAMERA
-			ShutterCallback shutterCallback1 = new ShutterCallback() {
-				public void onShutter() {
-					// TODO Do something when the shutter closes.
-					
-				}
-			};
-
-			PictureCallback rawCallback1 = new PictureCallback() {
-				public void onPictureTaken(byte[] _data, Camera _camera) {
-					// TODO Do something with the image RAW data.
-				}
-			};
-
 			PictureCallback jpegCallback1 = new PictureCallback() {
+				
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
 					
@@ -222,10 +213,6 @@ public class AntiTheftService extends Service
 						e.printStackTrace();
 
 					}
-
-					
-					
-					
 				}
 			};
 			
@@ -236,23 +223,12 @@ public class AntiTheftService extends Service
 			parameters.setPictureFormat(PixelFormat.JPEG); 
 			camera1.setParameters(parameters);
 			
-			camera1.takePicture(shutterCallback1, rawCallback1, jpegCallback1);
+			camera1.takePicture(null,null, jpegCallback1);
+
 			
 			//camera1.release();
 			
 			//TAKE A PICTURE WITH SECOND CAMERA
-			ShutterCallback shutterCallback2 = new ShutterCallback() {
-				public void onShutter() {
-					// TODO Do something when the shutter closes.
-				}
-			};
-
-			PictureCallback rawCallback2 = new PictureCallback() {
-				public void onPictureTaken(byte[] _data, Camera _camera) {
-					// TODO Do something with the image RAW data.
-				}
-			};
-
 			PictureCallback jpegCallback2 = new PictureCallback() {
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
@@ -288,7 +264,7 @@ public class AntiTheftService extends Service
 			Camera.Parameters parameters2 = camera2.getParameters();
 			parameters2.setPictureFormat(PixelFormat.JPEG); 
 			camera2.setParameters(parameters2);
-			camera2.takePicture(shutterCallback2, rawCallback2, jpegCallback2);
+			camera2.takePicture(null,null, jpegCallback2);
 			
 			//camera2.release();
 			
