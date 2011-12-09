@@ -10,6 +10,7 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -26,6 +27,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 
 public class AntiTheftService extends Service
@@ -197,8 +199,9 @@ public class AntiTheftService extends Service
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
 					
-
-					Uri uriTarget = getContentResolver().insert(Media.INTERNAL_CONTENT_URI, new ContentValues());
+					ContentValues values = new ContentValues();  
+			        values.put(MediaStore.Images.Media.TITLE, "camera 1");  
+					Uri uriTarget = getContentResolver().insert(Media.INTERNAL_CONTENT_URI, values);
 					OutputStream imageFileOS;
 
 					try {
@@ -229,6 +232,9 @@ public class AntiTheftService extends Service
 		
 			Camera camera1;
 			camera1 = Camera.open(0);
+			Camera.Parameters parameters = camera1.getParameters();
+			parameters.setPictureFormat(PixelFormat.JPEG); 
+			camera1.setParameters(parameters);
 			
 			camera1.takePicture(shutterCallback1, rawCallback1, jpegCallback1);
 			
@@ -250,7 +256,9 @@ public class AntiTheftService extends Service
 			PictureCallback jpegCallback2 = new PictureCallback() {
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
-					Uri uriTarget = getContentResolver().insert(Media.INTERNAL_CONTENT_URI, new ContentValues());
+					ContentValues values = new ContentValues();  
+			        values.put(MediaStore.Images.Media.TITLE, "camera 2");  
+					Uri uriTarget = getContentResolver().insert(Media.INTERNAL_CONTENT_URI, values);
 					OutputStream imageFileOS;
 
 					try {
@@ -277,7 +285,9 @@ public class AntiTheftService extends Service
 		
 			Camera camera2;
 			camera2 = Camera.open(1);
-			
+			Camera.Parameters parameters2 = camera2.getParameters();
+			parameters2.setPictureFormat(PixelFormat.JPEG); 
+			camera2.setParameters(parameters2);
 			camera2.takePicture(shutterCallback2, rawCallback2, jpegCallback2);
 			
 			//camera2.release();
