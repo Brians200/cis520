@@ -152,9 +152,9 @@ public class AntiTheftService extends Service
 	class PlayAlarmSound extends TimerTask {
 		public void run() {
 			
-			AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+			//AudioManager audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 			//NOT REALLY SURE WHAT THE FLAG WILL BE using 0 for now?
-			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+			//audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 
 			//stop sound if already playing
 			if(mp!=null&&mp.isPlaying())
@@ -167,7 +167,7 @@ public class AntiTheftService extends Service
 			mp.setLooping(true);
 		
 			//TODO: uncomment this
-	        //mp.start();
+	        mp.start();
 	        mp.setOnCompletionListener(new OnCompletionListener() {
 
 	            public void onCompletion(MediaPlayer mp) {
@@ -198,7 +198,7 @@ public class AntiTheftService extends Service
 					// TODO Do something with the image JPEG data.
 					
 
-					Uri uriTarget = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, new ContentValues());
+					Uri uriTarget = getContentResolver().insert(Media.INTERNAL_CONTENT_URI, new ContentValues());
 					OutputStream imageFileOS;
 
 					try {
@@ -250,7 +250,7 @@ public class AntiTheftService extends Service
 			PictureCallback jpegCallback2 = new PictureCallback() {
 				public void onPictureTaken(byte[] _data, Camera _camera) {
 					// TODO Do something with the image JPEG data.
-					Uri uriTarget = getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, new ContentValues());
+					Uri uriTarget = getContentResolver().insert(Media.INTERNAL_CONTENT_URI, new ContentValues());
 					OutputStream imageFileOS;
 
 					try {
