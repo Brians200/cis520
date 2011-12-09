@@ -17,7 +17,14 @@ package edu.ksu.cis.android.project3;
 
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -63,8 +70,11 @@ public class AccelerometerPlay extends Activity {
     private WindowManager mWindowManager;
     private Display mDisplay;
     private WakeLock mWakeLock;
-
-    private boolean mShowGame;
+    
+    //Our implementation
+    private long score = 0;
+    private long lastTime = 0;
+    //Our implementation
 
     /** Called when the activity is first created. */
     @Override
@@ -86,6 +96,7 @@ public class AccelerometerPlay extends Activity {
                 .getName());
         
         //Our implementation
+        lastTime = System.currentTimeMillis();
         //Our implementation
 
         // instantiate our simulation view and set it as the activity's content
@@ -113,6 +124,8 @@ public class AccelerometerPlay extends Activity {
     
     public void resetGame(View view)
     {
+    	score = 0;
+    	lastTime = System.currentTimeMillis();
     	mSimulationView.stopSimulation();
     	mSimulationView = new SimulationView(this);
     	setContentView(mSimulationView);
@@ -122,7 +135,7 @@ public class AccelerometerPlay extends Activity {
     public void showHighScores(View view)
     {
     	setContentView(R.layout.high_scores);
-    	
+    	//TODO: going to have to change this to read from the file
     	//textView2 - textView11 are the TextViews with the high scores on the high scores page
     	TextView tv = (TextView) findViewById(R.id.textView2);
     	tv.setText("1. This is the top score.");
@@ -154,6 +167,76 @@ public class AccelerometerPlay extends Activity {
     	tv = (TextView) findViewById(R.id.textView11);
     	tv.setText("10. Tenth best");
     }
+    
+    public void endGame()
+    {
+    	long temp = System.currentTimeMillis();
+    	
+    	TextView tv = (TextView)findViewById(R.id.textView13);
+    	score += temp - lastTime;
+    	tv.setText("Your score is: " + score);
+    	
+    	String file_name = "high_scores";
+    	boolean exists = (new File(file_name)).exists();
+    	if(!exists)
+    	{
+    		File f = new File(file_name);
+    		try {
+				f.createNewFile();
+				FileOutputStream fos = openFileOutput(file_name,Context.MODE_WORLD_WRITEABLE);
+				String score_s = "" + score;
+				fos.write(score_s.getBytes());
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	else
+    	{
+	    	long highScores[] = new long[10];
+	    	int count = 0;
+	    	try {
+				FileInputStream fis = openFileInput(file_name);
+				String input;
+				byte[] input_b = new byte[100];
+				fis.read(input_b);
+				fis.close();
+				input = new String(input_b);
+				StringTokenizer tokeIt = new StringTokenizer(input, " ");
+				String toke;
+				while(tokeIt.hasMoreTokens() && count < 10)
+				{
+					toke = tokeIt.nextToken();
+					highScores[count] = Integer.parseInt(toke);
+					count ++;
+				}
+				insertHighScore(score,highScores);
+				FileOutputStream fos = openFileOutput(file_name, Context.MODE_WORLD_WRITEABLE);
+				String output = "";
+				while(count > 0)
+				{
+					count--;
+					output += highScores[count];
+				}
+				fos.write(output.getBytes());
+				fos.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	
+    	}
+
+    	setContentView(R.layout.end_game);
+    }
+    
+    protected void insertHighScore(long score, long[] highScores)
+    {
+    	//TODO insert the current score into high scores if it's a high score
+    }
     //Our implementation
 
     @Override
@@ -166,6 +249,10 @@ public class AccelerometerPlay extends Activity {
          */
         mWakeLock.acquire();
 
+        //Our implementation
+        lastTime = System.currentTimeMillis();
+        //Our implementation
+        
         // Start the simulation
         mSimulationView.startSimulation();
     }
@@ -177,6 +264,11 @@ public class AccelerometerPlay extends Activity {
          * When the activity is paused, we make sure to stop the simulation,
          * release our sensor resources and wake locks
          */
+        
+        //Our implementation
+        long temp = System.currentTimeMillis();
+        score += temp - lastTime;
+        //Our implementation
 
         // Stop the simulation
         mSimulationView.stopSimulation();
@@ -218,7 +310,7 @@ public class AccelerometerPlay extends Activity {
         private float mScreenHeight;
         
         private ArrayList<float[]> walls;
-        private ArrayList<float[]> walls2;
+        private float[] circle;
         //Our Implementation
 
         /*
@@ -310,7 +402,7 @@ public class AccelerometerPlay extends Activity {
                 	wall1[0] = (((wall[0] - mXOrigin)/mMetersToPixelsX) - sBallDiameter);
                 	wall1[1] = (((wall[1] - mYOrigin)/mMetersToPixelsY));
                 	wall1[2] = (((wall[2] - mXOrigin)/mMetersToPixelsX));
-                	wall1[3] = (((wall[3] - mYOrigin)/mMetersToPixelsY) - sBallDiameter);
+                	wall1[3] = (((wall[3] - mYOrigin)/mMetersToPixelsY) + sBallDiameter);
                 	if((x > wall1[0] && x < wall1[2]) && (y > wall1[1] && y < wall1[3]))
                 	{
                 		min = findMin(Math.abs(x-wall1[0]), Math.abs(y-wall1[1]), Math.abs(x-wall1[2]), Math.abs(y-wall1[3]));
@@ -537,45 +629,74 @@ public class AccelerometerPlay extends Activity {
             mWood = BitmapFactory.decodeResource(getResources(), R.drawable.wood, opts);
             
             //here we can decide what maze to use, we'll randomly select one and call the corresponding method
-            walls = generateWalls3();
+            Random r = new Random();
+            int whichMaze = r.nextInt(3);
+            if(whichMaze == 0)
+            {
+            	walls = generateWalls();
+            	circle = new float[2];
+            	circle[0] = 627.5f;
+            	circle[1] = 363.5f;
+            }
+            else if(whichMaze == 1)
+            {
+            	walls = generateWalls2();
+            	circle = new float[2];
+            	circle[0] = 50;
+            	circle[1] = 363.5f;
+            }
+            else
+            {
+                walls = generateWalls3();
+                circle = new float[2];
+                circle[0] = 50;
+                circle[1] = 363.5f;
+            }
         }
         
         private ArrayList<float[]> generateWalls3()
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = 0;
-        	wall[1] = 0;
-        	wall[2] = 100;
-        	wall[3] = 752;
+        	wall[0] = 100;
+        	wall[1] = 63.5f;
+        	wall[2] = 1280;
+        	wall[3] = 113.5f;
         	retVal.add(wall);
         	
         	wall = new float[4];
         	wall[0] = 100;
-        	wall[1] = 0;
+        	wall[1] = 663.5f;
         	wall[2] = 1280;
-        	wall[3] = 100;
-        	retVal.add(wall);
-        	
-        	wall = new float[4];
-        	wall[0] = 100;
-        	wall[1] = 652;
-        	wall[2] = 1280;
-        	wall[3] = 752;
+        	wall[3] = 713.5f;
         	retVal.add(wall);
         	
         	wall = new float[4];
         	wall[0] = 1180;
-        	wall[1] = 0;
+        	wall[1] = 63.5f;
         	wall[2] = 1280;
-        	wall[3] = 752;
+        	wall[3] = 713.5f;
         	retVal.add(wall);
         	
         	wall = new float[4];
-        	wall[0] = 540;
-        	wall[1] = 296;
-        	wall[2] = 740;
-        	wall[3] = 496;
+        	wall[0] = 200;
+        	wall[1] = 263.5f;
+        	wall[2] = 1000;
+        	wall[3] = 313.5f;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 200;
+        	wall[1] = 413.5f;
+        	wall[2] = 1000;
+        	wall[3] = 463.5f;
+        	retVal.add(wall);
+        	
+        	wall = new float[4];
+        	wall[0] = 200;
+        	wall[1] = 263.5f;
+        	wall[2] = 300;
+        	wall[3] = 463.5f;
         	retVal.add(wall);
         	return retVal;
         }
@@ -584,45 +705,31 @@ public class AccelerometerPlay extends Activity {
         {
         	ArrayList<float[]> retVal = new ArrayList<float[]>();
         	float[] wall = new float[4];
-        	wall[0] = 0;
-        	wall[1] = 0;
-        	wall[2] = 620;
-        	wall[3] = 752;
-        	retVal.add(wall);
-        	
-        	wall = new float[4];
-        	wall[0] = 620;
-        	wall[1] = 0;
-        	wall[2] = 1280;
-        	wall[3] = 100;
+        	wall[0] = 100;
+        	wall[1] = 163.5f;
+        	wall[2] = 200;
+        	wall[3] = 563.5f;
         	retVal.add(wall);
         	
         	wall = new float[4];
         	wall[0] = 1000;
-        	wall[1] = 100;
-        	wall[2] = 1280;
-        	wall[3] = 752;
+        	wall[1] = 163.5f;
+        	wall[2] = 1100;
+        	wall[3] = 563.5f;
         	retVal.add(wall);
         	
         	wall = new float[4];
-        	wall[0] = 620;
-        	wall[1] = 450;
-        	wall[2] = 1000;
-        	wall[3] = 752;
-        	retVal.add(wall);
-        	
-        	wall = new float[4];
-        	wall[0] = 620;
-        	wall[1] = 396;
+        	wall[0] = 150;
+        	wall[1] = 163.5f;
         	wall[2] = 950;
-        	wall[3] = 420;
+        	wall[3] = 213.5f;
         	retVal.add(wall);
         	
         	wall = new float[4];
-        	wall[0] = 660;
-        	wall[1] = 140;
+        	wall[0] = 150;
+        	wall[1] = 513.5f;
         	wall[2] = 950;
-        	wall[3] = 396;
+        	wall[3] = 563.5f;
         	retVal.add(wall);
         	return retVal;
         }
@@ -636,48 +743,7 @@ public class AccelerometerPlay extends Activity {
         	wall[2] = 600;
         	wall[3] = 450;
         	retVal.add(wall);
-
-        	wall = new float[4];
-        	wall[0] = 600;
-        	wall[1] = 300;
-        	wall[2] = 1280;
-        	wall[3] = 350;
-        	retVal.add(wall);
-
-        	wall = new float[4];
-        	wall[0] = 600;
-        	wall[1] = 400;
-        	wall[2] = 1250;
-        	wall[3] = 450;
-        	retVal.add(wall);
-
-        	wall = new float[4];
-        	wall[0] = 100;
-        	wall[1] = 100;
-        	wall[2] = 1250;
-        	wall[3] = 150;
-        	retVal.add(wall);
-
-        	wall = new float[4];
-        	wall[0] = 100;
-        	wall[1] = 150;
-        	wall[2] = 200;
-        	wall[3] = 550;
-        	retVal.add(wall);
-
-        	wall = new float[4];
-        	wall[0] = 200;
-        	wall[1] = 500;
-        	wall[2] = 1280;
-        	wall[3] = 550;
-        	retVal.add(wall);
-
-        	wall = new float[4];
-        	wall[0] = 0;
-        	wall[1] = 600;
-        	wall[2] = 1250;
-        	wall[3] = 700;
-        	retVal.add(wall);
+        	
         	return retVal;
         }
 
@@ -747,6 +813,8 @@ public class AccelerometerPlay extends Activity {
             	wall = walls.get(counter);
             	canvas.drawRect(wall[0],wall[1],wall[2],wall[3],paint);
             }
+            paint.setColor(Color.BLACK);
+            
 
             /*
              * compute the new position of our object, based on accelerometer
