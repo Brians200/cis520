@@ -143,7 +143,6 @@ public class AccelerometerPlay extends Activity {
     	SharedPreferences scores =  getPreferences(0);
     	
     	
-    	
     	//textView2 - textView11 are the TextViews with the high scores on the high scores page
     	TextView tv = (TextView) findViewById(R.id.textView2);
     	tv.setText("1. " + scores.getLong("firstHighScore", 0));
@@ -170,7 +169,7 @@ public class AccelerometerPlay extends Activity {
     	tv.setText("8. " + scores.getLong("eighthHighScore", 0));
     	
     	tv = (TextView) findViewById(R.id.textView10);
-    	tv.setText("9. " + scores.getLong("ninethHighScore", 0));
+    	tv.setText("9. " + scores.getLong("ninthHighScore", 0));
     	
     	tv = (TextView) findViewById(R.id.textView11);
     	tv.setText("10. " + scores.getLong("tenthHighScore", 0));
@@ -194,11 +193,11 @@ public class AccelerometerPlay extends Activity {
     	highScores[4] = sp.getLong("fifthHighScore", 0);
     	highScores[5] = sp.getLong("sixthHighScore", 0);
     	highScores[6] = sp.getLong("seventhHighScore", 0);
-    	highScores[7] = sp.getLong("eightHighScore", 0);
+    	highScores[7] = sp.getLong("eighthHighScore", 0);
     	highScores[8] = sp.getLong("ninthHighScore", 0);
     	highScores[9] = sp.getLong("tenthHighScore", 0);
     	
-    	insertHighScore(score, highScores);
+    	highScores = insertHighScore(score, highScores);
     	
     	SharedPreferences.Editor editor = sp.edit();
     	editor.putLong("firstHighScore", highScores[0]);
@@ -208,26 +207,28 @@ public class AccelerometerPlay extends Activity {
     	editor.putLong("fifthHighScore", highScores[4]);
     	editor.putLong("sixthHighScore", highScores[5]);
     	editor.putLong("seventhHighScore", highScores[6]);
-    	editor.putLong("eightHighScore", highScores[7]);
+    	editor.putLong("eighthHighScore", highScores[7]);
     	editor.putLong("ninthHighScore", highScores[8]);
     	editor.putLong("tenthHighScore", highScores[9]);
     }
     
-    protected void insertHighScore(long score, long[] highScores)
+    protected long[] insertHighScore(long score, long[] highScores)
     {
+    	long[] retVal = highScores;
     	long temp = score;
     	long temp2;
     	int count = 0;
     	while(count < 10)
     	{
-    		if(highScores[count] < temp)
+    		if(retVal[count] < temp)
     		{
-    			temp2 = highScores[count];
-    			highScores[count] = temp;
+    			temp2 = retVal[count];
+    			retVal[count] = temp;
     			temp = temp2;
     		}
     		count++;
     	}
+    	return retVal;
     }
     //Our implementation
 
@@ -381,7 +382,7 @@ public class AccelerometerPlay extends Activity {
                 double xSquared = (x - circleX) * (x - circleX);
                 double ySquared = (y - circleY) * (y - circleY);
                 double distance = Math.sqrt(xSquared + ySquared);
-                if(distance < .001)
+                if(distance < .002)
                 {
                 	endGame();
                 }
