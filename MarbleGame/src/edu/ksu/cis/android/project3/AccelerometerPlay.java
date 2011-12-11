@@ -125,6 +125,23 @@ public class AccelerometerPlay extends Activity {
     	setContentView(R.layout.main);
     }
     
+    public void resetHighScores()
+    {
+    	SharedPreferences sp = getPreferences(0);
+    	SharedPreferences.Editor editor = sp.edit();
+    	editor.putLong("firstHighScore", 0);
+    	editor.putLong("secondHighScore", 0);
+    	editor.putLong("thirdHighScore", 0);
+    	editor.putLong("fourthHighScore", 0);
+    	editor.putLong("fifthHighScore", 0);
+    	editor.putLong("sixthHighScore", 0);
+    	editor.putLong("seventhHighScore", 0);
+    	editor.putLong("eighthHighScore", 0);
+    	editor.putLong("ninthHighScore", 0);
+    	editor.putLong("tenthHighScore", 0);
+    	editor.commit();
+    }
+    
     public void resetGame(View view)
     {
     	score = 0;
