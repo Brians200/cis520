@@ -136,36 +136,70 @@ public class AccelerometerPlay extends Activity {
     {
     	setContentView(R.layout.high_scores);
     	//TODO: going to have to change this to read from the file
+    	
+    	long[] highScores = new long[10];
+    	
+    	for(int i=0; i<10;i++)
+    	{
+    		highScores[i]=0;
+    	}
+    	
+    	try {
+			FileInputStream fis = openFileInput("high_scores");
+			byte[] input_b = new byte[1000];
+			fis.read(input_b);
+			
+			String input = new String(input_b);
+			int count = 0;
+			StringTokenizer tokeIt = new StringTokenizer(input, " ");
+			String toke;
+			while(tokeIt.hasMoreTokens() && count < 10)
+			{
+				toke = tokeIt.nextToken();
+				highScores[count] = Long.parseLong(toke);
+				count ++;
+			}
+			
+			
+		} catch (FileNotFoundException e) {
+			//The array has been zeroed out, so it will show all zeroes.
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+    	
+    	
     	//textView2 - textView11 are the TextViews with the high scores on the high scores page
     	TextView tv = (TextView) findViewById(R.id.textView2);
-    	tv.setText("1. This is the top score.");
+    	tv.setText("1. " + highScores[0]);
     	
     	tv = (TextView) findViewById(R.id.textView3);
-    	tv.setText("2. Second best score.");
+    	tv.setText("2. " + highScores[1]);
     	
     	tv = (TextView) findViewById(R.id.textView4);
-    	tv.setText("3. Third best");
+    	tv.setText("3. " + highScores[2]);
     	
     	tv = (TextView) findViewById(R.id.textView5);
-    	tv.setText("4. Fourth best");
+    	tv.setText("4. " + highScores[3]);
     	
     	tv = (TextView) findViewById(R.id.textView6);
-    	tv.setText("5. Fifth best");
+    	tv.setText("5. " + highScores[4]);
     	
     	tv = (TextView) findViewById(R.id.textView7);
-    	tv.setText("6. Sixth best");
+    	tv.setText("6. " + highScores[5]);
     	
     	tv = (TextView) findViewById(R.id.textView8);
-    	tv.setText("7. Seventh best");
+    	tv.setText("7. " + highScores[6]);
     	
     	tv = (TextView) findViewById(R.id.textView9);
-    	tv.setText("8. Eighth best");
+    	tv.setText("8. " + highScores[7]);
     	
     	tv = (TextView) findViewById(R.id.textView10);
-    	tv.setText("9. Ninth best");
+    	tv.setText("9. " + highScores[8]);
     	
     	tv = (TextView) findViewById(R.id.textView11);
-    	tv.setText("10. Tenth best");
+    	tv.setText("10. " + highScores[9]);
     }
     
     public void endGame()
