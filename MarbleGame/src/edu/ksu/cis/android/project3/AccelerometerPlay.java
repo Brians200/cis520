@@ -198,7 +198,7 @@ public class AccelerometerPlay extends Activity {
 	    	try {
 				FileInputStream fis = openFileInput(file_name);
 				String input;
-				byte[] input_b = new byte[100];
+				byte[] input_b = new byte[1000];
 				fis.read(input_b);
 				fis.close();
 				input = new String(input_b);
@@ -207,24 +207,23 @@ public class AccelerometerPlay extends Activity {
 				while(tokeIt.hasMoreTokens() && count < 10)
 				{
 					toke = tokeIt.nextToken();
-					highScores[count] = Integer.parseInt(toke);
+					highScores[count] = Long.parseLong(toke);
 					count ++;
 				}
 				insertHighScore(score,highScores);
 				FileOutputStream fos = openFileOutput(file_name, Context.MODE_WORLD_WRITEABLE);
 				String output = "";
-				while(count > 0)
+				count = 0;
+				while(count < 10)
 				{
-					count--;
-					output += highScores[count];
+					output += highScores[count] + " ";
+					count++;
 				}
 				fos.write(output.getBytes());
 				fos.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    	
@@ -235,7 +234,19 @@ public class AccelerometerPlay extends Activity {
     
     protected void insertHighScore(long score, long[] highScores)
     {
-    	//TODO insert the current score into high scores if it's a high score
+    	long temp = score;
+    	long temp2;
+    	int count = 0;
+    	while(count < 10)
+    	{
+    		if(highScores[count] < temp)
+    		{
+    			temp2 = highScores[count];
+    			highScores[count] = temp;
+    			temp = temp2;
+    		}
+    		count++;
+    	}
     }
     //Our implementation
 
@@ -311,6 +322,7 @@ public class AccelerometerPlay extends Activity {
         
         private ArrayList<float[]> walls;
         private float[] circle;
+        private int whichMaze;
         //Our Implementation
 
         /*
@@ -382,6 +394,14 @@ public class AccelerometerPlay extends Activity {
                 final float ymax = mVerticalBound;
                 final float x = mPosX;
                 final float y = mPosY;
+                
+                final float circleX = (((circle[0] - mXOrigin)/mMetersToPixelsX) - sBallDiameter);
+                final float circleY = (((circle[1] - mYOrigin)/mMetersToPixelsY));
+                if(x == circleX && y == circleY)
+                {
+                	endGame();
+                }
+                
                 if (x > xmax) {
                     mPosX = xmax;
                 } else if (x < -xmax) {
@@ -630,7 +650,7 @@ public class AccelerometerPlay extends Activity {
             
             //here we can decide what maze to use, we'll randomly select one and call the corresponding method
             Random r = new Random();
-            int whichMaze = r.nextInt(3);
+            whichMaze = r.nextInt(3);
             if(whichMaze == 0)
             {
             	walls = generateWalls();
@@ -814,7 +834,7 @@ public class AccelerometerPlay extends Activity {
             	canvas.drawRect(wall[0],wall[1],wall[2],wall[3],paint);
             }
             paint.setColor(Color.BLACK);
-            
+            canvas.drawCircle(circle[0], circle[1], 15f, paint);
 
             /*
              * compute the new position of our object, based on accelerometer
