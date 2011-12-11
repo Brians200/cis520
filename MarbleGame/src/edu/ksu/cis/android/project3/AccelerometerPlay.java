@@ -125,7 +125,7 @@ public class AccelerometerPlay extends Activity {
     	setContentView(R.layout.main);
     }
     
-    public void resetHighScores()
+    public void resetHighScores(View view)
     {
     	SharedPreferences sp = getPreferences(0);
     	SharedPreferences.Editor editor = sp.edit();
@@ -140,6 +140,7 @@ public class AccelerometerPlay extends Activity {
     	editor.putLong("ninthHighScore", 0);
     	editor.putLong("tenthHighScore", 0);
     	editor.commit();
+    	showHighScores(view);
     }
     
     public void resetGame(View view)
@@ -155,7 +156,6 @@ public class AccelerometerPlay extends Activity {
     public void showHighScores(View view)
     {
     	setContentView(R.layout.high_scores);
-    	//TODO: going to have to change this to read from the file
     	
     	SharedPreferences scores =  getPreferences(0);
     	
@@ -238,7 +238,7 @@ public class AccelerometerPlay extends Activity {
     	int count = 0;
     	while(count < 10)
     	{
-    		if(retVal[count] > temp)
+    		if(retVal[count] > temp || retVal[count] == 0)
     		{
     			temp2 = retVal[count];
     			retVal[count] = temp;
