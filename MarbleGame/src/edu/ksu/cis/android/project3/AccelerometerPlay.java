@@ -100,49 +100,6 @@ public class AccelerometerPlay extends Activity {
         
         //Our implementation
         lastTime = System.currentTimeMillis();
-        SharedPreferences sp = getPreferences(0);
-        SharedPreferences.Editor editor = sp.edit();
-        if(sp.getLong("firstHighScore",-1)==-1)
-        {
-        	editor.putLong("firstHighScore", 0);
-        }
-        if(sp.getLong("secondHighScore",-1)==-1)
-        {
-        	editor.putLong("secondHighScore", 0);
-        }
-        if(sp.getLong("thirdHighScore",-1)==-1)
-        {
-        	editor.putLong("thirdHighScore", 0);
-        }
-        if(sp.getLong("fourthHighScore",-1)==-1)
-        {
-        	editor.putLong("fourthHighScore", 0);
-        }
-        if(sp.getLong("fifthHighScore",-1)==-1)
-        {
-        	editor.putLong("fifthHighScore", 0);
-        }
-        if(sp.getLong("sixthHighScore",-1)==-1)
-        {
-        	editor.putLong("sixthHighScore", 0);
-        }
-        if(sp.getLong("seventhHighScore",-1)==-1)
-        {
-        	editor.putLong("seventhHighScore", 0);
-        }
-        if(sp.getLong("eighthHighScore",-1)==-1)
-        {
-        	editor.putLong("eighthHighScore", 0);
-        }
-        if(sp.getLong("ninthHighScore",-1)==-1)
-        {
-        	editor.putLong("ninthHighScore", 0);
-        }
-        if(sp.getLong("tenthHighScore",-1)==-1)
-        {
-        	editor.putLong("tenthHighScore", 0);
-        }
-        
         //Our implementation
 
         // instantiate our simulation view and set it as the activity's content
@@ -253,6 +210,7 @@ public class AccelerometerPlay extends Activity {
     	editor.putLong("eighthHighScore", highScores[7]);
     	editor.putLong("ninthHighScore", highScores[8]);
     	editor.putLong("tenthHighScore", highScores[9]);
+    	editor.commit();
     }
     
     protected long[] insertHighScore(long score, long[] highScores)
@@ -263,7 +221,7 @@ public class AccelerometerPlay extends Activity {
     	int count = 0;
     	while(count < 10)
     	{
-    		if(retVal[count] < temp)
+    		if(retVal[count] > temp)
     		{
     			temp2 = retVal[count];
     			retVal[count] = temp;
