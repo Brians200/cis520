@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -74,6 +75,7 @@ public class AccelerometerPlay extends Activity {
     //Our implementation
     private long score = 0;
     private long lastTime = 0;
+    final private String highScorePreference = "high_scores";
     //Our implementation
 
     /** Called when the activity is first created. */
@@ -204,66 +206,39 @@ public class AccelerometerPlay extends Activity {
     
     public void endGame()
     {
+    	setContentView(R.layout.end_game);
     	long temp = System.currentTimeMillis();
     	
     	TextView tv = (TextView)findViewById(R.id.textView13);
     	score += temp - lastTime;
     	tv.setText("Your score is: " + score);
     	
-    	String file_name = "high_scores";
-    	boolean exists = (new File(file_name)).exists();
-    	if(!exists)
-    	{
-    		File f = new File(file_name);
-    		try {
-				f.createNewFile();
-				FileOutputStream fos = openFileOutput(file_name,Context.MODE_WORLD_WRITEABLE);
-				String score_s = "" + score;
-				fos.write(score_s.getBytes());
-				fos.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-    	}
-    	else
-    	{
-	    	long highScores[] = new long[10];
-	    	int count = 0;
-	    	try {
-				FileInputStream fis = openFileInput(file_name);
-				String input;
-				byte[] input_b = new byte[1000];
-				fis.read(input_b);
-				fis.close();
-				input = new String(input_b);
-				StringTokenizer tokeIt = new StringTokenizer(input, " ");
-				String toke;
-				while(tokeIt.hasMoreTokens() && count < 10)
-				{
-					toke = tokeIt.nextToken();
-					highScores[count] = Long.parseLong(toke);
-					count ++;
-				}
-				insertHighScore(score,highScores);
-				FileOutputStream fos = openFileOutput(file_name, Context.MODE_WORLD_WRITEABLE);
-				String output = "";
-				count = 0;
-				while(count < 10)
-				{
-					output += highScores[count] + " ";
-					count++;
-				}
-				fos.write(output.getBytes());
-				fos.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	    	
-    	}
-
-    	setContentView(R.layout.end_game);
+    	long highScores[] = new long[10];
+    	SharedPreferences sp = getPreferences(0);
+    	highScores[0] = sp.getLong("firstHighScore", 0);
+    	highScores[1] = sp.getLong("secondHighScore", 0);
+    	highScores[2] = sp.getLong("thirdHighScore", 0);
+    	highScores[3] = sp.getLong("fourthHighScore", 0);
+    	highScores[4] = sp.getLong("fifthHighScore", 0);
+    	highScores[5] = sp.getLong("sixthHighScore", 0);
+    	highScores[6] = sp.getLong("seventhHighScore", 0);
+    	highScores[7] = sp.getLong("eightHighScore", 0);
+    	highScores[8] = sp.getLong("ninthHighScore", 0);
+    	highScores[9] = sp.getLong("tenthHighScore", 0);
+    	
+    	insertHighScore(score, highScores);
+    	
+    	SharedPreferences.Editor editor = sp.edit();
+    	editor.putLong("firstHighScore", highScores[0]);
+    	editor.putLong("secondHighScore", highScores[1]);
+    	editor.putLong("thirdHighScore", highScores[2]);
+    	editor.putLong("fourthHighScore", highScores[3]);
+    	editor.putLong("fifthHighScore", highScores[4]);
+    	editor.putLong("sixthHighScore", highScores[5]);
+    	editor.putLong("seventhHighScore", highScores[6]);
+    	editor.putLong("eightHighScore", highScores[7]);
+    	editor.putLong("ninthHighScore", highScores[8]);
+    	editor.putLong("tenthHighScore", highScores[9]);
     }
     
     protected void insertHighScore(long score, long[] highScores)
@@ -431,7 +406,10 @@ public class AccelerometerPlay extends Activity {
                 
                 final float circleX = (((circle[0] - mXOrigin)/mMetersToPixelsX) - sBallDiameter);
                 final float circleY = (((circle[1] - mYOrigin)/mMetersToPixelsY));
-                if(x == circleX && y == circleY)
+                double xSquared = (x - circleX) * (x - circleX);
+                double ySquared = (y - circleY) * (y - circleY);
+                double distance = Math.sqrt(xSquared + ySquared);
+                if(distance < .001)
                 {
                 	endGame();
                 }
@@ -868,7 +846,7 @@ public class AccelerometerPlay extends Activity {
             	canvas.drawRect(wall[0],wall[1],wall[2],wall[3],paint);
             }
             paint.setColor(Color.BLACK);
-            canvas.drawCircle(circle[0], circle[1], 15f, paint);
+            canvas.drawCircle(circle[0], circle[1], 20f, paint);
 
             /*
              * compute the new position of our object, based on accelerometer
